@@ -14,18 +14,23 @@ $FolderPath= "C:\Freigaben"
  
 # Check ob der Ordner bereits existiert und erstellen des Ordners anhand des Gruppennamens
 foreach ($g in $Gruppen){
-  Write-Host "$FolderPath\$g"
-}
-
-<#If(!(Test-Path -Path $FolderPath))
+  If(!(Test-Path -Path $FolderPath\$g))
 {
     #powershell create directory
-    New-Item -ItemType Directory -Path $FolderPath
+    New-Item -ItemType Directory -Path $FolderPath\$g
     Write-Host "New folder created successfully!" -f Green
 }
 Else
 {
   Write-Host "Folder already exists!" -f Yellow
 }
+  
+}
 
-#Read more: https://www.sharepointdiary.com/2021/07/create-a-folder-using-powershell.html#ixzz8LWHKXj1K #>
+foreach ($g in $Gruppen){
+  New-SmbShare -Name $g-Daten -Path $FolderPath\$g -FullAccess $g
+  New-SmbShare -Name $g-Transfer -Path $FolderPath\$g -FullAccess $g
+}
+
+
+
