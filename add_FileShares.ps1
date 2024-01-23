@@ -12,12 +12,27 @@ $Gruppen = 'Internetcaffee', 'Steuerberatung', 'Verbraucherberatung', 'Leiter', 
 # Variable die den Pfad zu den neuen Ordnern definiert
 $FolderPath= "C:\Freigaben"
  
-# Check ob der Ordner bereits existiert und erstellen des Ordners anhand des Gruppennamens
+# Check ob der Ordner bereits existiert und erstellen des Ordners anhand des Gruppennamens mit Vorlagen
+foreach ($g in $Gruppen){
+  If(!(Test-Path -Path $FolderPath\$g-Vorlagen))
+{
+    #powershell create directory
+    New-Item -ItemType Directory -Path $FolderPath\$g
+    Write-Host "New folder created successfully!" -f Green
+}
+Else
+{
+  Write-Host "Folder already exists!" -f Yellow
+}
+  
+}
+
+# Check ob der Ordner bereits existiert und erstellen des Ordners anhand des Gruppennamens mit Tausch
 foreach ($g in $Gruppen){
   If(!(Test-Path -Path $FolderPath\$g))
 {
     #powershell create directory
-    New-Item -ItemType Directory -Path $FolderPath\$g
+    New-Item -ItemType Directory -Path $FolderPath\$g-Tausch
     Write-Host "New folder created successfully!" -f Green
 }
 Else
