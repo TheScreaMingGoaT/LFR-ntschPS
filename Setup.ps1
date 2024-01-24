@@ -1,11 +1,5 @@
-<# 
-Author: Patrick Gruenauer | Microsoft PowerShell MVP [2018-2024]
-Web: sid-500.com
-This script is intended for use in a Test environment. It creates OUs, 
-Groups and Users. 
-#>
 Import-Module activedirectory
-# If necessary, bypass the execution policy.
+
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force -Confirm:$false
  
 # Define OUs, Groups and Users and Attributes here
@@ -26,19 +20,18 @@ $root = $env:USERDNSDOMAIN.Split('.')[1]
 $sub = $env:USERDNSDOMAIN.Split('.')[0]
  
 # Create OUs
-<# Foreach ($o in $OUs) {
+ Foreach ($o in $OUs) {
     New-ADOrganizationalUnit -Name $o -Verbose
-}#>
+}
  
 # Create Groups
-<# Foreach ($g in $Groups) {
+Foreach ($g in $Groups) {
     New-ADGroup -Name $g `
     -Path "OU=Gruppen,DC=gr2,DC=laba304,DC=local" `
     -GroupScope Universal -GroupCategory Security -Verbose
-} #>
+} 
  
-# Create users and store them in the corresponding OU. 
-# Add users to groups Leiter to the OU.
+
  foreach ($i in $Technik) {
     $split =    $i.split(' ')
     $sam =      ($split[0].Substring(0,1) + '.' + $split[1]).ToLower()
@@ -57,66 +50,137 @@ $sub = $env:USERDNSDOMAIN.Split('.')[0]
     -EmailAddress $upn `
     -Verbose
 }
- 
-<#
-foreach ($t in $Technician) {
-    $split =    $t.split(' ')
+
+foreach ($l in $Leiter) {
+    $split =    $i.split(' ')
     $sam =      ($split[0].Substring(0,1) + '.' + $split[1]).ToLower()
     $upn =      ($split[0].Substring(0,1) + '.' + $split[1] + '@' + 
                 $env:USERDNSDOMAIN).ToLower()
     New-ADUser `
-    -Name $t `
+    -Name $i `
     -GivenName $split[0] `
     -Surname $split[1] `
-    -DisplayName $t `
+    -DisplayName $i `
     -Enabled $true `
     -AccountPassword (ConvertTo-SecureString -AsPlainText $userpw -Force) `
     -SamAccountName $sam `
     -UserPrincipalName $upn `
-    -Path "OU=Technicians,DC=$sub,DC=$root" `
+    -Path "OU=Mitarbeiter,DC=gr2,DC=laba304,DC=local" `
     -EmailAddress $upn `
-    -Department 'Technicians' `
-    -City (Get-Random -InputObject $City[0..3]) `
     -Verbose
 }
- 
-foreach ($c in $CEO) {
-    $split =    $c.split(' ')
+
+foreach ($v in $Verbraucherberatung) {
+    $split =    $i.split(' ')
     $sam =      ($split[0].Substring(0,1) + '.' + $split[1]).ToLower()
     $upn =      ($split[0].Substring(0,1) + '.' + $split[1] + '@' + 
                 $env:USERDNSDOMAIN).ToLower()
     New-ADUser `
-    -Name $c `
+    -Name $i `
     -GivenName $split[0] `
     -Surname $split[1] `
-    -DisplayName $c `
+    -DisplayName $i `
     -Enabled $true `
     -AccountPassword (ConvertTo-SecureString -AsPlainText $userpw -Force) `
     -SamAccountName $sam `
     -UserPrincipalName $upn `
-    -Path "OU=CEOs,DC=$sub,DC=$root" `
+    -Path "OU=Mitarbeiter,DC=gr2,DC=laba304,DC=local" `
     -EmailAddress $upn `
-    -Department 'CEOs' `
-    -City (Get-Random -InputObject $City[0..3]) `
     -Verbose
 }
+
+foreach ($s in $Steuerberatung) {
+    $split =    $i.split(' ')
+    $sam =      ($split[0].Substring(0,1) + '.' + $split[1]).ToLower()
+    $upn =      ($split[0].Substring(0,1) + '.' + $split[1] + '@' + 
+                $env:USERDNSDOMAIN).ToLower()
+    New-ADUser `
+    -Name $i `
+    -GivenName $split[0] `
+    -Surname $split[1] `
+    -DisplayName $i `
+    -Enabled $true `
+    -AccountPassword (ConvertTo-SecureString -AsPlainText $userpw -Force) `
+    -SamAccountName $sam `
+    -UserPrincipalName $upn `
+    -Path "OU=Mitarbeiter,DC=gr2,DC=laba304,DC=local" `
+    -EmailAddress $upn `
+    -Verbose
+}
+
+
+$InternetcaffeeUser  =   'B.Mueller','B.Schneider','B.Lehmann','B.Hofmann'
+$SteuerberatungUser =   'B.Krause','B.Hofmann','B.Mayer'
+$VerbraucherberatungUser = 'B.Hofmann','B.Schulze','B.Wolf','B.Merkel'
+$LeiterUser = 'B.Hofmann'
+$TechnikUser = 'B.Lehmann', 'B.Hofmann'
+
+Foreach ($i in $InternetcaffeeUser) {
+    Add-ADGroupMember -Identity "Internetcaffee" -Members $i
+}
+
+Foreach ($s in $SteuerberatungUser) {
+    Add-ADGroupMember -Identity "Steuerberatung" -Members $s
+}
+
+Foreach ($v in $VerbraucherberatungUser) {
+    Add-ADGroupMember -Identity "Verbraucherberatung" -Members $v
+}
+
+Foreach ($l in $LeiterUser) {
+    Add-ADGroupMember -Identity "Leiter" -Members $l
+}
+
+Foreach ($t in $TechnikUser) {
+    Add-ADGroupMember -Identity "Technik" -Members $t
+}
+
+
+# Definieren der Gruppennamen
+$Gruppen = 'Internetcaffee', 'Steuerberatung', 'Verbraucherberatung', 'Leiter', 'Technik'
+
+# Variable die den Pfad zu den neuen Ordnern definiert
+$FolderPath= "C:\Freigaben"
  
-# Add OU Users to Group
-$CEOg = "OU=CEOs,DC=$sub,DC=$root"
-$hrg = "OU=HR,DC=$sub,DC=$root"
-$techg = "OU=Technicians,DC=$sub,DC=$root"
-$HRg = "OU=HR,DC=$sub,DC=$root"
- 
-Get-ADUser -Filter * -SearchBase $CEOg | 
-ForEach-Object {Add-ADGroupMember -Identity CEOs -Members $_ -Verbose}
- 
-Get-ADUser -Filter * -SearchBase $hrg | 
-ForEach-Object {Add-ADGroupMember -Identity HR -Members $_ -Verbose}
- 
-Get-ADUser -Filter * -SearchBase $techg | 
-ForEach-Object {Add-ADGroupMember -Identity Technicians -Members $_ -Verbose}
- 
-Get-ADUser -Filter * -SearchBase $HRg | 
-ForEach-Object {Add-ADGroupMember -Identity HR -Members $_ -Verbose}
- 
-Start-Process dsa.msc #>
+# Check ob der Ordner bereits existiert und erstellen des Ordners anhand des Gruppennamens mit Vorlagen
+foreach ($g in $Gruppen){
+  If(!(Test-Path -Path $FolderPath\$g-Vorlagen))
+{
+    #powershell create directory
+    New-Item -ItemType Directory -Path $FolderPath\$g-Vorlagen
+    Write-Host "New folder created successfully!" -f Green
+}
+Else
+{
+  Write-Host "Folder already exists!" -f Yellow
+}
+  
+}
+
+# Check ob der Ordner bereits existiert und erstellen des Ordners anhand des Gruppennamens mit Tausch
+foreach ($g in $Gruppen){
+  If(!(Test-Path -Path $FolderPath\$g-Tausch))
+{
+    #powershell create directory
+    New-Item -ItemType Directory -Path $FolderPath\$g-Tausch
+    Write-Host "New folder created successfully!" -f Green
+}
+Else
+{
+  Write-Host "Folder already exists!" -f Yellow
+}
+  
+}
+
+foreach ($g in $Gruppen){
+  New-SmbShare -Name $g-Daten -Path $FolderPath\$g -FullAccess $g
+  New-SmbShare -Name $g-Transfer -Path $FolderPath\$g -FullAccess $g
+}
+
+# Setzen des ShareQuotas
+# Set-FsrmQuota -Path "C:\Freigaben\*" -Description "limit usage to 1.5 GB" -Size 1GB
+
+
+# Importieren der GPO zur Automation:)
+Import-GPO -BackupGPOName ShareMapping -TargetName ShareMapping -path -CreateIfNeeded .\GPOs 
+

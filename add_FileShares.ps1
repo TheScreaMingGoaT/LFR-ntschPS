@@ -17,7 +17,7 @@ foreach ($g in $Gruppen){
   If(!(Test-Path -Path $FolderPath\$g-Vorlagen))
 {
     #powershell create directory
-    New-Item -ItemType Directory -Path $FolderPath\$g
+    New-Item -ItemType Directory -Path $FolderPath\$g-Vorlagen
     Write-Host "New folder created successfully!" -f Green
 }
 Else
@@ -29,7 +29,7 @@ Else
 
 # Check ob der Ordner bereits existiert und erstellen des Ordners anhand des Gruppennamens mit Tausch
 foreach ($g in $Gruppen){
-  If(!(Test-Path -Path $FolderPath\$g))
+  If(!(Test-Path -Path $FolderPath\$g-Tausch))
 {
     #powershell create directory
     New-Item -ItemType Directory -Path $FolderPath\$g-Tausch
