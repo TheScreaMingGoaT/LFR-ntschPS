@@ -111,3 +111,13 @@ foreach($g in $Gruppen){
     Grant-SmbShareAccess -Name $g-Tausch -AccountName $g -AccessRight Full
     Grant-SmbShareAccess -Name $g-Vorlagen -AccountName $g -AccessRight Full
 }
+
+
+New-Item -ItemType Directory -Path C:\Home
+New-SmbShare -Name Home$ -Path C:\Home
+$user = New-Object -TypeName 'System.Security.Principal.SecurityIdentifier' -ArgumentList @([System.Security.Principal.WellKnownSidType]::AuthenticatedUserSid, $null)
+$path = 'C:\Home'
+$acl  = Get-Acl -Path $path
+$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($user, 'FullControl','Allow')
+$acl.SetAccessRule($rule)
+Set-Acl -Path $path -AclObject $acl
