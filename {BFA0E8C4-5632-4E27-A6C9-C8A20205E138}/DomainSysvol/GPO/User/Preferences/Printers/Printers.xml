@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Printers clsid="{1F577D12-3D1B-471e-A1B7-060317597B9C}"><SharedPrinter clsid="{9A5E9697-9095-436d-A0EE-4D128FDFBCE5}" name="172.25.52.14" status="172.25.52.14" image="1" changed="2024-01-19 06:43:07" uid="{D83A4706-540D-4E93-8CD7-C18C4FE3AC8F}" removePolicy="1" bypassErrors="1"><Properties action="R" comment="" path="\\Gr2-DC\172.25.52.14" location="" default="0" skipLocal="0" deleteAll="0" persistent="0" deleteMaps="0" port=""/></SharedPrinter>
+</Printers>

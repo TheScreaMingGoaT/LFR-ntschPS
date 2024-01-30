@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Groups clsid="{3125E937-EB16-4b4c-9934-544FC6D24D26}"><Group clsid="{6D4A79E4-529C-4481-ABD0-F5BD7EA93BA7}" name="Technik" image="0" changed="2024-01-19 06:48:46" uid="{45E2F11A-D566-41EE-8A32-D985E6562C1D}" userContext="0" removePolicy="0"><Properties action="C" description="" deleteAllUsers="0" deleteAllGroups="0" removeAccounts="0" groupSid="" groupName="Technik"><Members><Member name="Technik" action="ADD" sid=""/></Members></Properties></Group>
+</Groups>

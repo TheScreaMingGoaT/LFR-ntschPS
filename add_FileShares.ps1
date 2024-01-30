@@ -43,9 +43,22 @@ Else
 }
 
 foreach ($g in $Gruppen){
-  New-SmbShare -Name $g-Daten -Path $FolderPath\$g -FullAccess $g
-  New-SmbShare -Name $g-Transfer -Path $FolderPath\$g -FullAccess $g
+  New-SmbShare -Name $g-Tausch -Path $FolderPath\$g-Tausch 
+  New-SmbShare -Name $g-Vorlagen -Path $FolderPath\$g-Vorlagen 
+}
+
+foreach($g in $Gruppen){
+    Grant-SmbShareAccess -Name $g-Tausch -AccountName $g -AccessRight Full
+    Grant-SmbShareAccess -Name $g-Vorlagen -AccountName $g -AccessRight Full
 }
 
 
 
+# Erstellen des Userhome Ordners
+
+$user = New-Object -TypeName 'System.Security.Principal.SecurityIdentifier' -ArgumentList @([System.Security.Principal.WellKnownSidType]::AuthenticatedUserSid, $null)
+$path = 'C:\Home'
+$acl  = Get-Acl -Path $path
+$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($user, 'FullControl','Allow')
+$acl.SetAccessRule($rule)
+Set-Acl -Path $path -AclObject $acl
