@@ -51,20 +51,26 @@ $VerbraucherberatungGroup = 'B.Hoffmann','B.Schulze','B.Wolf','B.Merkel'
 $LeiterGroup = 'B.Hoffmann'
 $TechnikGroup = 'B.Lehmann', 'B.Hoffmann'
 
+
+# Gruppenmitglieder einfügen und Netlogon Skripte verteilen
 Foreach ($s in $SteuerberatungGroup) {
     Add-ADGroupMember -Identity "Steuerberatung" -Members $s
+    SetADUser -Identity $s -ScriptPath "Steuerberatung.bat"
 }
 
 Foreach ($v in $VerbraucherberatungGroup) {
     Add-ADGroupMember -Identity "Verbraucherberatung" -Members $v
+    SetADUser -Identity $v -ScriptPath "Verbraucherberatung.bat"
 }
 
 Foreach ($l in $LeiterGroup) {
     Add-ADGroupMember -Identity "Leiter" -Members $l
+    SetADUser -Identity $l -ScriptPath "Leiter.bat"
 }
 
 Foreach ($t in $TechnikGroup) {
     Add-ADGroupMember -Identity "Technik" -Members $t
+    SetADUser -Identity $t -ScriptPath "Technik.bat"
 }
 
 $Gruppen = 'Internetcaffee', 'Steuerberatung', 'Verbraucherberatung', 'Leiter', 'Technik'
@@ -118,6 +124,15 @@ New-SmbShare -Name Home$ -Path C:\Home
 $user = New-Object -TypeName 'System.Security.Principal.SecurityIdentifier' -ArgumentList @([System.Security.Principal.WellKnownSidType]::AuthenticatedUserSid, $null)
 $path = 'C:\Home'
 $acl  = Get-Acl -Path $path
+$isProtected = $true
+$preserveInheritance = $true
 $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($user, 'FullControl','Allow')
 $acl.SetAccessRule($rule)
+$acl.SetAccessRuleProtection($isProtected, $preserveInheritance)
 Set-Acl -Path $path -AclObject $acl
+
+$HomeMitarbeiter= 'B.Mueller','B.Schneider','B.Lehmann','B.Hoffmann','B.Krause','B.Mayer','B.Schulze','B.Wolf','B.Merkel'
+
+foreach($m in $HomeMitarbeiter){
+    Set-ADUser $m -homedirectory \\GR2-DC\Home\%username% -homedrive O:
+}

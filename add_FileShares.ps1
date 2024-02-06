@@ -55,7 +55,8 @@ foreach($g in $Gruppen){
 
 
 # Erstellen des Userhome Ordners
-
+New-Item -ItemType Directory -Path C:\Home
+New-SmbShare -Name Home$ -Path C:\Home
 $user = New-Object -TypeName 'System.Security.Principal.SecurityIdentifier' -ArgumentList @([System.Security.Principal.WellKnownSidType]::AuthenticatedUserSid, $null)
 $path = 'C:\Home'
 $acl  = Get-Acl -Path $path
