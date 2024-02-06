@@ -52,25 +52,25 @@ $LeiterGroup = 'B.Hoffmann'
 $TechnikGroup = 'B.Lehmann', 'B.Hoffmann'
 
 
+
+
+
+
 # Gruppenmitglieder einfügen und Netlogon Skripte verteilen
 Foreach ($s in $SteuerberatungGroup) {
     Add-ADGroupMember -Identity "Steuerberatung" -Members $s
-    SetADUser -Identity $s -ScriptPath "Steuerberatung.bat"
 }
 
 Foreach ($v in $VerbraucherberatungGroup) {
     Add-ADGroupMember -Identity "Verbraucherberatung" -Members $v
-    SetADUser -Identity $v -ScriptPath "Verbraucherberatung.bat"
 }
 
 Foreach ($l in $LeiterGroup) {
     Add-ADGroupMember -Identity "Leiter" -Members $l
-    SetADUser -Identity $l -ScriptPath "Leiter.bat"
 }
 
 Foreach ($t in $TechnikGroup) {
     Add-ADGroupMember -Identity "Technik" -Members $t
-    SetADUser -Identity $t -ScriptPath "Technik.bat"
 }
 
 $Gruppen = 'Internetcaffee', 'Steuerberatung', 'Verbraucherberatung', 'Leiter', 'Technik'
