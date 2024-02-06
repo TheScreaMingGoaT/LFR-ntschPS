@@ -1,0 +1,1 @@
+msg * "Der Rechner wird in 10 Minuten heruntergefahren"
