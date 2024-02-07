@@ -111,6 +111,8 @@ Else
 foreach ($g in $Gruppen){
   New-SmbShare -Name $g-Tausch -Path $FolderPath\$g-Tausch 
   New-SmbShare -Name $g-Vorlagen -Path $FolderPath\$g-Vorlagen 
+  New-FsrmQuota -Path $FolderPath\$g-Tausch -Description "limit usage to 1 GB." -Size 1GB
+  New-FsrmQuota -Path -Path $FolderPath\$g-Vorlagen  -Description "limit usage to 1 GB." -Size 1GB
 }
 
 foreach($g in $Gruppen){
@@ -118,21 +120,10 @@ foreach($g in $Gruppen){
     Grant-SmbShareAccess -Name $g-Vorlagen -AccountName $g -AccessRight Full
 }
 
+foreach($m in $Mitarbeiter){
+    New-Item -Path "C:\Home\$m" -ItemType Directory
+    New-SmbShare -Name $m -Path "C:\Home\$m" -ChangeAccess "gr2.laba304.local\$m"
+    SET-ADUser $m -HomeDirectory "\\gr2-dc\$m" -HomeDrive H:
 
-New-Item -ItemType Directory -Path C:\Home
-New-SmbShare -Name Home$ -Path C:\Home
-$user = New-Object -TypeName 'System.Security.Principal.SecurityIdentifier' -ArgumentList @([System.Security.Principal.WellKnownSidType]::AuthenticatedUserSid, $null)
-$path = 'C:\Home'
-$acl  = Get-Acl -Path $path
-$isProtected = $true
-$preserveInheritance = $true
-$rule = New-Object System.Security.AccessControl.FileSystemAccessRule($user, 'FullControl','Allow')
-$acl.SetAccessRule($rule)
-$acl.SetAccessRuleProtection($isProtected, $preserveInheritance)
-Set-Acl -Path $path -AclObject $acl
-
-$HomeMitarbeiter= 'B.Mueller','B.Schneider','B.Lehmann','B.Hoffmann','B.Krause','B.Mayer','B.Schulze','B.Wolf','B.Merkel'
-
-foreach($m in $HomeMitarbeiter){
-    Set-ADUser $m -homedirectory \\GR2-DC\Home\%username% -homedrive O:
 }
+

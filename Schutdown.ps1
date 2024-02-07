@@ -1,4 +1,4 @@
-﻿$action = New-ScheduledTaskAction -Execute ".\message.bat"
+﻿$action = New-ScheduledTaskAction -Execute "C:\Scripts\message.bat"
 $trigger = New-ScheduledTaskTrigger -Daily -At "15:50"
 $princibal = New-ScheduledTaskPrincipal -Userid 'gr2.laba304.local\Administrator' -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet 
@@ -10,4 +10,7 @@ $triggerShutdown = New-ScheduledTaskTrigger -Daily -At "16:00"
 $princibalShutdown = New-ScheduledTaskPrincipal -Userid 'gr2.laba304.local\Administrator' -RunLevel Highest
 $settingsShutdown = New-ScheduledTaskSettingsSet 
 $taskShutdown = New-ScheduledTask -Action $actionShutdown -Principal $princibalShutdown -Trigger $triggerShutdown -Settings $settingsShutdown 
-Register-ScheduledTask Scheduled_Shutdown -InputObject $task
+Register-ScheduledTask Scheduled_Shutdown -InputObject $taskShutdown
+
+
+Add-Computer -DomainName gr2.laba304.local -Restart
