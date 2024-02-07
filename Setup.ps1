@@ -109,21 +109,22 @@ Else
 }
 
 foreach ($g in $Gruppen){
-  New-SmbShare -Name $g-Tausch -Path $FolderPath\$g-Tausch 
-  New-SmbShare -Name $g-Vorlagen -Path $FolderPath\$g-Vorlagen 
-  New-FsrmQuota -Path $FolderPath\$g-Tausch -Description "limit usage to 1 GB." -Size 1GB
-  New-FsrmQuota -Path -Path $FolderPath\$g-Vorlagen  -Description "limit usage to 1 GB." -Size 1GB
+  New-SmbShare -Name $g-Tausch -Path $FolderPath\$g-Tausch -FullAccess "gr2.laba304.local\$g"
+  New-SmbShare -Name $g-Vorlagen -Path $FolderPath\$g-Vorlagen -ReadAccess "gr2.laba304.local\$g"
+  New-FsrmQuota -Path "$FolderPath\$g-Tausch" -Description "limit usage to 1 GB." -Size 1GB
+  New-FsrmQuota -Path "$FolderPath\$g-Vorlagen"  -Description "limit usage to 1 GB." -Size 1GB
 }
 
-foreach($g in $Gruppen){
-    Grant-SmbShareAccess -Name $g-Tausch -AccountName $g -AccessRight Full
-    Grant-SmbShareAccess -Name $g-Vorlagen -AccountName $g -AccessRight Full
-}
 
-foreach($m in $Mitarbeiter){
+
+$UserHome = 'B.Mueller','B.Schneider','B.Lehmann','B.Hoffmann','B.Mayer','B.Krause','B.Wolf','B.Merkel'
+
+foreach($m in $UserHome){
     New-Item -Path "C:\Home\$m" -ItemType Directory
-    New-SmbShare -Name $m -Path "C:\Home\$m" -ChangeAccess "gr2.laba304.local\$m"
+    New-SmbShare -Name $m -Path "C:\Home\$m" -FullAccess "gr2.laba304.local\$m"
     SET-ADUser $m -HomeDirectory "\\gr2-dc\$m" -HomeDrive H:
 
 }
+
+
 
